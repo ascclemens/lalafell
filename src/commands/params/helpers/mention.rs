@@ -1,1 +1,1 @@
-helper!(MentionOrId, UserId, "<@", "could not parse target: {}");
+helper!(MentionOrId, UserId, &["<@!", "<@"], "could not parse target: {}");

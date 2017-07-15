@@ -1,1 +1,1 @@
-helper!(ChannelOrId, ChannelId, "<#", "could not parse channel: {}");
+helper!(ChannelOrId, ChannelId, &["<#"], "could not parse channel: {}");
