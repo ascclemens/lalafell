@@ -16,6 +16,9 @@ macro_rules! forward_parsed_values {
       fn $method<V>(self, visitor: V) -> Result<V::Value>
         where V: de::Visitor<'de>
       {
+        if self.parts.is_empty() {
+          return Err(Error::MissingParams);
+        }
         match self.parts.remove(0).parse::<$ty>() {
           Ok(val) => val.into_deserializer().$method(visitor),
           Err(e) => Err(de::Error::custom(e))
