@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Kyle Clemens <me@kyleclemens.com>"]
 
 [dependencies]
-discord = { version = "*", git = "https://github.com/jkcclemens/discord-rs" }
+discord = { version = "*", git = "https://github.com/jkcclemens/discord-rs", default-features = false }
 serde = "1.0"
 serde_derive = "1.0"
 chrono = "0.4"
