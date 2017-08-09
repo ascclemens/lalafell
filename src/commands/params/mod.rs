@@ -8,7 +8,6 @@ use self::error::Error;
 use std::result::Result as StdResult;
 
 use serde::de::{self, Deserialize, IntoDeserializer};
-use serde::de::value::SeqDeserializer;
 
 macro_rules! forward_parsed_values {
   ($($ty:ident => $method:ident,)*) => {
@@ -72,10 +71,39 @@ impl<'de, 'a> de::Deserializer<'de> for &'a mut Deserializer<'de> {
     self.deserialize_tuple(fields.len(), visitor)
   }
 
-  fn deserialize_tuple<V>(self, _len: usize, visitor: V) -> Result<V::Value>
+  fn deserialize_tuple<V>(self, len: usize, visitor: V) -> Result<V::Value>
     where V: de::Visitor<'de>
   {
-    visitor.visit_seq(self)
+    if self.parts.is_empty() {
+      return Err(Error::MissingParams);
+    }
+
+    struct Access<'de, 'a> where 'de: 'a {
+      deserializer: &'a mut Deserializer<'de>,
+      len: usize,
+    }
+
+    impl<'de, 'a> ::serde::de::SeqAccess<'de> for Access<'de, 'a> where 'de: 'a {
+      type Error = Error;
+
+      fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>>
+        where T: ::serde::de::DeserializeSeed<'de>,
+      {
+        if self.len > 0 {
+          self.len -= 1;
+          let value = ::serde::de::DeserializeSeed::deserialize(seed, &mut *self.deserializer)?;
+          Ok(Some(value))
+        } else {
+          Ok(None)
+        }
+      }
+
+      fn size_hint(&self) -> Option<usize> {
+        Some(self.len)
+      }
+    }
+
+    visitor.visit_seq(Access { deserializer: self, len: len })
   }
 
   fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
@@ -101,10 +129,8 @@ impl<'de, 'a> de::Deserializer<'de> for &'a mut Deserializer<'de> {
   fn deserialize_seq<V>(self, visitor: V) -> Result<V::Value>
     where V: de::Visitor<'de>
   {
-    if self.parts.is_empty() {
-      return Err(Error::MissingParams);
-    }
-    SeqDeserializer::new(self.parts.drain(..)).deserialize_seq(visitor)
+    let len = self.parts.len();
+    self.deserialize_tuple(len, visitor)
   }
 
   forward_parsed_values! {

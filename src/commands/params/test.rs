@@ -87,3 +87,29 @@ fn parse_optional_vec() {
   };
   assert_eq!(expected, params);
 }
+
+#[test]
+fn parse_vec_u8s() {
+  #[derive(Debug, Deserialize, PartialEq)]
+  struct VecParams {
+    first: u8,
+    rest: Vec<u8>
+  }
+  let params: VecParams = super::from_str("1 2 3").unwrap();
+  let expected = VecParams {
+    first: 1,
+    rest: vec![2, 3]
+  };
+  assert_eq!(expected, params);
+}
+
+#[test]
+#[should_panic]
+fn parse_missing_vec() {
+  #[derive(Debug, Deserialize, PartialEq)]
+  struct VecParams {
+    first: u8,
+    rest: Vec<u8>
+  }
+  super::from_str::<VecParams>("1").unwrap();
+}
