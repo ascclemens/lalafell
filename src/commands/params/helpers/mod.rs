@@ -1,6 +1,6 @@
 macro_rules! helper {
   ($name: ident, $kind: ident, $starts: expr, $message: expr) => {
-    use discord::model::$kind;
+    use serenity::model::id::$kind;
 
     use serde::de::{self, Deserialize, Deserializer};
 

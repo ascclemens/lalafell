@@ -6,9 +6,13 @@ pub use super::{
   CommandFailure,
   ExternalCommandFailure,
   InternalCommandFailure,
-  HasBot,
   HasParams
 };
 
-pub use discord::model::{Message, LiveServer};
-pub use discord::builders::EmbedBuilder;
+pub use serenity::client::Context;
+pub use serenity::model::channel::{Message, GuildChannel};
+pub use serenity::model::id::GuildId;
+pub use serenity::builder::CreateEmbed;
+
+pub use std::sync::Arc;
+pub use serenity::prelude::RwLock;

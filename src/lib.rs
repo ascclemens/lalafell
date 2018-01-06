@@ -1,6 +1,6 @@
 #![feature(box_syntax, fnbox)]
 
-extern crate discord;
+extern crate serenity;
 #[macro_use]
 extern crate serde;
 #[macro_use]
@@ -15,6 +15,5 @@ extern crate ansi_term;
 
 pub mod error;
 pub mod logging;
-pub mod bot;
 pub mod listeners;
 pub mod commands;

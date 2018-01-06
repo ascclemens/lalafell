@@ -4,7 +4,6 @@ version = "0.1.0"
 authors = ["Kyle Clemens <me@kyleclemens.com>"]
 
 [dependencies]
-discord = { version = "*", git = "https://github.com/jkcclemens/discord-rs", default-features = false }
 serde = "1.0"
 serde_derive = "1.0"
 chrono = "0.4"
@@ -12,3 +11,10 @@ log = "0.3"
 fern = "0.4"
 ansi_term = "0.9"
 error-chain = "0.11"
+
+[dependencies.serenity]
+version = "0.5"
+git = "https://github.com/zeyla/serenity"
+branch = "v0.5.0"
+default-features = false
+features = ["builder", "cache", "client", "gateway", "model", "utils"]
