@@ -14,6 +14,5 @@ extern crate chrono;
 extern crate ansi_term;
 
 pub mod error;
-pub mod logging;
 pub mod listeners;
 pub mod commands;
