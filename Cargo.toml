@@ -6,10 +6,7 @@ authors = ["Kyle Clemens <me@kyleclemens.com>"]
 [dependencies]
 serde = "1.0"
 serde_derive = "1.0"
-chrono = "0.4"
-log = "0.3"
-fern = "0.4"
-ansi_term = "0.9"
+log = "0.4"
 error-chain = "0.11"
 
 [dependencies.serenity]

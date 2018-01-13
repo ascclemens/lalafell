@@ -7,11 +7,8 @@ extern crate serde;
 extern crate serde_derive;
 #[macro_use]
 extern crate log;
-extern crate fern;
 #[macro_use]
 extern crate error_chain;
-extern crate chrono;
-extern crate ansi_term;
 
 pub mod error;
 pub mod listeners;
