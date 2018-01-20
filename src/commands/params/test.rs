@@ -113,3 +113,61 @@ fn parse_missing_vec() {
   }
   super::from_str::<VecParams>("1").unwrap();
 }
+
+#[test]
+fn only_missing_optional() {
+  #[derive(Debug, Deserialize, PartialEq)]
+  struct OptParams {
+    opt: Option<String>
+  }
+  let params: OptParams = super::from_str("").unwrap();
+  let expected = OptParams { opt: None };
+  assert_eq!(expected, params);
+}
+
+#[test]
+fn only_optional() {
+  #[derive(Debug, Deserialize, PartialEq)]
+  struct OptParams {
+    opt: Option<String>
+  }
+  let params: OptParams = super::from_str("henlo").unwrap();
+  let expected = OptParams { opt: Some(String::from("henlo")) };
+  assert_eq!(expected, params);
+}
+
+#[test]
+fn only_missing_optionals() {
+  #[derive(Debug, Deserialize, PartialEq)]
+  struct OptParams {
+    opt: Option<String>,
+    opt2: Option<String>
+  }
+  let params: OptParams = super::from_str("").unwrap();
+  let expected = OptParams { opt: None, opt2: None };
+  assert_eq!(expected, params);
+}
+
+#[test]
+fn only_optionals_one() {
+  #[derive(Debug, Deserialize, PartialEq)]
+  struct OptParams {
+    opt: Option<String>,
+    opt2: Option<String>
+  }
+  let params: OptParams = super::from_str("henlo").unwrap();
+  let expected = OptParams { opt: Some(String::from("henlo")), opt2: None };
+  assert_eq!(expected, params);
+}
+
+#[test]
+fn only_optionals_two() {
+  #[derive(Debug, Deserialize, PartialEq)]
+  struct OptParams {
+    opt: Option<String>,
+    opt2: Option<String>
+  }
+  let params: OptParams = super::from_str("henlo lizer").unwrap();
+  let expected = OptParams { opt: Some(String::from("henlo")), opt2: Some(String::from("lizer")) };
+  assert_eq!(expected, params);
+}

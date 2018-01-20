@@ -74,10 +74,6 @@ impl<'de, 'a> de::Deserializer<'de> for &'a mut Deserializer<'de> {
   fn deserialize_tuple<V>(self, len: usize, visitor: V) -> Result<V::Value>
     where V: de::Visitor<'de>
   {
-    if self.parts.is_empty() {
-      return Err(Error::MissingParams);
-    }
-
     struct Access<'de, 'a> where 'de: 'a {
       deserializer: &'a mut Deserializer<'de>,
       len: usize,
@@ -129,6 +125,9 @@ impl<'de, 'a> de::Deserializer<'de> for &'a mut Deserializer<'de> {
   fn deserialize_seq<V>(self, visitor: V) -> Result<V::Value>
     where V: de::Visitor<'de>
   {
+    if self.parts.is_empty() {
+      return Err(Error::MissingParams);
+    }
     let len = self.parts.len();
     self.deserialize_tuple(len, visitor)
   }
