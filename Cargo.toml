@@ -14,4 +14,4 @@ version = "0.5"
 git = "https://github.com/zeyla/serenity"
 branch = "v0.5.0"
 default-features = false
-features = ["builder", "cache", "client", "gateway", "model", "utils"]
+features = ["builder", "client", "gateway", "model", "utils"]

@@ -4,12 +4,19 @@ use serenity::model::channel::Message;
 
 use std::collections::HashMap;
 
-#[derive(Default)]
 pub struct CommandListener<'a> {
+  prefix: String,
   commands: HashMap<Vec<String>, Box<Command<'a> + Send + Sync>>
 }
 
 impl<'a> CommandListener<'a> {
+  pub fn new(prefix: &str) -> Self {
+    CommandListener {
+      prefix: prefix.to_string(),
+      commands: HashMap::default()
+    }
+  }
+
   pub fn add_command<T: AsRef<str>>(&mut self, names: &[T], command: Box<Command<'a> + Send + Sync>) {
     self.commands.insert(names.iter().map(|t| t.as_ref().to_string()).collect(), command);
   }
@@ -22,7 +29,7 @@ impl<'a> EventHandler for CommandListener<'a> {
       return;
     }
     let first = parts[0];
-    if !first.starts_with('!') {
+    if !first.starts_with(&self.prefix) {
       return;
     }
     let command_name = first[1..].to_lowercase();
