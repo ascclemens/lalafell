@@ -12,6 +12,6 @@ error-chain = "0.11"
 [dependencies.serenity]
 version = "0.5"
 git = "https://github.com/zeyla/serenity"
-branch = "v0.5.0"
+branch = "master"
 default-features = false
 features = ["builder", "cache", "client", "gateway", "model", "utils"]
