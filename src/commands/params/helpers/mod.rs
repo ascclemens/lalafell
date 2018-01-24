@@ -45,3 +45,4 @@ macro_rules! helper {
 
 pub mod mention;
 pub mod channel;
+pub mod role;

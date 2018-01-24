@@ -3,6 +3,7 @@ pub mod prelude;
 
 pub use self::params::helpers::mention::MentionOrId;
 pub use self::params::helpers::channel::ChannelOrId;
+pub use self::params::helpers::role::RoleOrId;
 
 use error::{self, ResultExt};
 
