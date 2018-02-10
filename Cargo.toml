@@ -11,7 +11,7 @@ error-chain = "0.11"
 
 [dependencies.serenity]
 version = "0.5"
-git = "https://github.com/zeyla/serenity"
-branch = "master"
+git = "https://github.com/jkcclemens/serenity"
+branch = "reorder_roles"
 default-features = false
 features = ["builder", "client", "gateway", "model", "utils"]
