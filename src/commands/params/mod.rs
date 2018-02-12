@@ -58,7 +58,7 @@ pub fn from_str<'a, T>(input: &'a str) -> Result<T>
   if deserializer.parts.is_empty() {
     Ok(t)
   } else {
-    Err(Error::Custom("trailing characters".to_owned()))
+    Err(Error::TrailingCharacters)
   }
 }
 

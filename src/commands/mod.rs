@@ -43,6 +43,14 @@ pub trait HasParams {
             .description(&usage))
           .wrap())
       },
+      Err(::commands::params::error::Error::TrailingCharacters) => {
+        let usage = usage.to_owned();
+        Err(ExternalCommandFailure::default()
+          .message(move |e: CreateEmbed| e
+            .title("Too many parameters.")
+            .description(&usage))
+          .wrap())
+      },
       Err(e) => {
         // I promise there's a better way, but I can't figure it out right now
         let message = format!("{}", e);
