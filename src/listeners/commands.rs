@@ -1,6 +1,9 @@
 use commands::*;
+
 use serenity::client::{Context, EventHandler};
 use serenity::model::channel::Message;
+
+use quoted_strings::QuotedParts;
 
 use std::collections::HashMap;
 
@@ -24,7 +27,8 @@ impl<'a> CommandListener<'a> {
 
 impl<'a> EventHandler for CommandListener<'a> {
   fn message(&self, context: Context, message: Message) {
-    let parts: Vec<&str> = message.content.split_whitespace().collect();
+    let strs = QuotedParts::all(&message.content);
+    let parts: Vec<&str> = strs.iter().map(|x| x.as_str()).collect();
     if parts.is_empty() {
       return;
     }

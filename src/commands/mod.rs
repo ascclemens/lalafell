@@ -12,13 +12,16 @@ use serenity::model::channel::{Message, Channel, GuildChannel};
 use serenity::model::id::GuildId;
 use serenity::builder::CreateEmbed;
 
-use serde::de::DeserializeOwned;
+use structopt::StructOpt;
+use structopt::clap::{App, AppSettings};
 
 use std::sync::Arc;
 use serenity::prelude::RwLock;
 use std::boxed::FnBox;
 
 pub type CommandResult<'a> = Result<CommandSuccess<'a>, CommandFailure<'a>>;
+
+pub const TEMPLATE: &str = "{about}\n\nUSAGE:\n    !{usage}\n\n{all-args}";
 
 pub trait Command<'a> {
   fn run(&self, context: &Context, message: &Message, params: &[&str]) -> CommandResult<'a>;
@@ -29,47 +32,25 @@ pub trait PublicChannelCommand<'a> {
 }
 
 pub trait HasParams {
-  type Params: DeserializeOwned;
+  type Params: StructOpt;
 
-  fn params<'a>(&self, usage: &str, params: &[&str]) -> Result<Self::Params, CommandFailure<'a>> {
-    let string = params.join(" ");
-    match params::from_str(&string) {
-      Ok(p) => Ok(p),
-      Err(::commands::params::error::Error::MissingParams) => {
-        let usage = usage.to_owned();
-        Err(ExternalCommandFailure::default()
-          .message(move |e: CreateEmbed| e
-            .title("Not enough parameters.")
-            .description(&usage))
-          .wrap())
-      },
-      Err(::commands::params::error::Error::TrailingCharacters) => {
-        let usage = usage.to_owned();
-        Err(ExternalCommandFailure::default()
-          .message(move |e: CreateEmbed| e
-            .title("Too many parameters.")
-            .description(&usage))
-          .wrap())
-      },
-      Err(e) => {
-        // I promise there's a better way, but I can't figure it out right now
-        let message = format!("{}", e);
-        if message.starts_with("could not parse target: ") {
-          Err(ExternalCommandFailure::default()
-            .message(|e: CreateEmbed| e
-              .title("Invalid target.")
-              .description("The target was not a mention, and it was not a user ID."))
-            .wrap())
-        } else if message.starts_with("could not parse channel: ") {
-          Err(ExternalCommandFailure::default()
-            .message(|e: CreateEmbed| e
-              .title("Invalid channel.")
-              .description("The channel was not a channel reference, and it was not a channel ID."))
-            .wrap())
-        } else {
-          Err(e).chain_err(|| "could not parse params")?
-        }
-      }
+  fn params<'a>(&self, name: &str, params: &[&str]) -> Result<Self::Params, CommandFailure<'a>> {
+    self.params_then(name, params, |x| x)
+  }
+
+  fn params_then<'a, 'b, 'c, F>(&self, name: &str, params: &[&str], then: F) -> Result<Self::Params, CommandFailure<'a>>
+    where F: FnOnce(App<'b, 'c>) -> App<'b, 'c>,
+          'b: 'c
+  {
+    let params = then(Self::Params::clap()
+      .global_settings(&[AppSettings::DeriveDisplayOrder, AppSettings::DisableVersion])
+      // TODO: raw(setting = "::structopt::clap::AppSettings::ArgRequiredElseHelp")
+      //       https://github.com/kbknapp/clap-rs/issues/1183 blocked until clap 3.x
+      .template(TEMPLATE))
+      .get_matches_from_safe([name].into_iter().chain(params));
+    match params {
+      Ok(p) => Ok(Self::Params::from_clap(&p)),
+      Err(e) => Err(e.to_string().into())
     }
   }
 }

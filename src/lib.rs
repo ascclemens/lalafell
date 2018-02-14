@@ -1,14 +1,14 @@
 #![feature(box_syntax, fnbox)]
 
+#[macro_use]
+extern crate error_chain;
+#[macro_use]
+extern crate log;
 extern crate serenity;
 #[macro_use]
 extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-#[macro_use]
-extern crate log;
-#[macro_use]
-extern crate error_chain;
+extern crate structopt;
+extern crate quoted_strings;
 
 pub mod error;
 pub mod listeners;
