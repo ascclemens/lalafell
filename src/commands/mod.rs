@@ -21,7 +21,7 @@ use std::boxed::FnBox;
 
 pub type CommandResult<'a> = Result<CommandSuccess<'a>, CommandFailure<'a>>;
 
-pub const TEMPLATE: &str = "{about}\n\nUSAGE:\n    !{usage}\n\n{all-args}";
+pub const TEMPLATE: &str = "{about}\n\nUSAGE:\n    **!{usage}**\n\n{all-args}";
 
 pub trait Command<'a> {
   fn run(&self, context: &Context, message: &Message, params: &[&str]) -> CommandResult<'a>;
