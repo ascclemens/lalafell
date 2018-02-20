@@ -21,7 +21,7 @@ use std::boxed::FnBox;
 
 pub type CommandResult<'a> = Result<CommandSuccess<'a>, CommandFailure<'a>>;
 
-pub const TEMPLATE: &str = "{about}\n\nUSAGE:\n    **!{usage}**\n\n{all-args}";
+pub const TEMPLATE: &str = "{about}\n\nUSAGE:\n    **{usage}**\n\n{all-args}";
 
 pub trait Command<'a> {
   fn run(&self, context: &Context, message: &Message, params: &[&str]) -> CommandResult<'a>;
@@ -42,12 +42,15 @@ pub trait HasParams {
     where F: FnOnce(App<'b, 'c>) -> App<'b, 'c>,
           'b: 'c
   {
+    let prefixed_name = format!("!{}", name);
+    let prefixed_name = prefixed_name.as_str();
     let params = then(Self::Params::clap()
       .global_settings(&[AppSettings::DeriveDisplayOrder, AppSettings::DisableVersion])
       // TODO: raw(setting = "::structopt::clap::AppSettings::ArgRequiredElseHelp")
       //       https://github.com/kbknapp/clap-rs/issues/1183 blocked until clap 3.x
       .template(TEMPLATE))
-      .get_matches_from_safe([name].into_iter().chain(params));
+      .name(prefixed_name)
+      .get_matches_from_safe([prefixed_name].into_iter().chain(params));
     match params {
       Ok(p) => Ok(Self::Params::from_clap(&p)),
       Err(e) => Err(e.to_string().into())
