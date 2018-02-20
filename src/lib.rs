@@ -5,8 +5,6 @@ extern crate error_chain;
 #[macro_use]
 extern crate log;
 extern crate serenity;
-#[macro_use]
-extern crate serde;
 extern crate structopt;
 extern crate quoted_strings;
 
