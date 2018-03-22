@@ -51,6 +51,8 @@ impl<'a> EventHandler for CommandListener<'a> {
       },
       Err(CommandFailure::Internal(info)) => {
         message.channel_id.send_message(|c| c.embed(|e| e.description("An internal error happened while processing this command."))).ok();
+        error!("error during command {} (message {})", command_name, message.id);
+        error!("params: {:?}", params);
         for err in info.error.iter() {
           error!("error: {:#?}", err);
         }
