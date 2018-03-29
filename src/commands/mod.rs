@@ -45,7 +45,11 @@ pub trait HasParams {
     let prefixed_name = format!("!{}", name);
     let prefixed_name = prefixed_name.as_str();
     let params = then(Self::Params::clap()
-      .global_settings(&[AppSettings::DeriveDisplayOrder, AppSettings::DisableVersion])
+      .global_settings(&[
+        AppSettings::DeriveDisplayOrder,
+        AppSettings::DisableVersion,
+        AppSettings::NextLineHelp,
+      ])
       // TODO: raw(setting = "::structopt::clap::AppSettings::ArgRequiredElseHelp")
       //       https://github.com/kbknapp/clap-rs/issues/1183 blocked until clap 3.x
       .template(TEMPLATE))
