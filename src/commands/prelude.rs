@@ -6,7 +6,7 @@ pub use super::{
   CommandFailure,
   ExternalCommandFailure,
   InternalCommandFailure,
-  HasParams
+  HasParams,
 };
 
 pub use serenity::client::Context;

@@ -10,8 +10,8 @@ structopt = { version = "0.2", default-features = false }
 quoted_strings = "0.1"
 
 [dependencies.serenity]
-version = "0.5"
+version = "*"
 git = "https://github.com/serenity-rs/serenity"
-branch = "master"
+branch = "v0.6.x"
 default-features = false
 features = ["builder", "cache", "client", "gateway", "model", "utils"]

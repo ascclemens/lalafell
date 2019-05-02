@@ -66,7 +66,7 @@ impl<'a, T> Command<'a> for T
   where T: PublicChannelCommand<'a>
 {
   fn run(&self, context: &Context, message: &Message, params: &[&str]) -> CommandResult<'a> {
-    let channel = message.channel_id.get().chain_err(|| "could not get channel for message")?;
+    let channel = message.channel_id.to_channel(&context).chain_err(|| "could not get channel for message")?;
     let public_channel = match channel {
       Channel::Guild(c) => c,
       _ => return Err("This command must be run in a public channel.".into())
@@ -78,12 +78,12 @@ impl<'a, T> Command<'a> for T
 
 #[derive(Default)]
 pub struct CommandSuccess<'a> {
-  pub message: Option<Box<FnBox(CreateEmbed) -> CreateEmbed + 'a>>
+  pub message: Option<Box<FnBox(&mut CreateEmbed) -> &mut CreateEmbed + 'a>>,
 }
 
 impl<'a> CommandSuccess<'a> {
   pub fn message<F>(mut self, message: F) -> Self
-    where F: 'a + FnBox(CreateEmbed) -> CreateEmbed
+    where F: 'a + FnBox(&mut CreateEmbed) -> &mut CreateEmbed,
   {
     self.message = Some(box message);
     self
@@ -96,23 +96,23 @@ impl<'a, T> From<T> for CommandSuccess<'a>
   fn from(message: T) -> Self {
     let message = message.as_ref().to_string();
     CommandSuccess::default()
-      .message(move |e: CreateEmbed| e.description(&message))
+      .message(move |e: &mut CreateEmbed| e.description(message))
   }
 }
 
 pub enum CommandFailure<'a> {
   Internal(InternalCommandFailure),
-  External(ExternalCommandFailure<'a>)
+  External(ExternalCommandFailure<'a>),
 }
 
 #[derive(Default)]
 pub struct ExternalCommandFailure<'a> {
-  pub message: Option<Box<FnBox(CreateEmbed) -> CreateEmbed + 'a>>
+  pub message: Option<Box<FnBox(&mut CreateEmbed) -> &mut CreateEmbed + 'a>>,
 }
 
 impl<'a> ExternalCommandFailure<'a> {
   pub fn message<F>(mut self, message: F) -> Self
-    where F: 'a + FnBox(CreateEmbed) -> CreateEmbed + 'static
+    where F: 'a + FnBox(&mut CreateEmbed) -> &mut CreateEmbed + 'static,
   {
     self.message = Some(box message);
     self
@@ -129,7 +129,7 @@ impl<'a, T> From<T> for CommandFailure<'a>
   fn from(message: T) -> Self {
     let message = message.as_ref().to_string();
     ExternalCommandFailure::default()
-      .message(move |e: CreateEmbed| e.description(&message))
+      .message(move |e: &mut CreateEmbed| e.description(message))
       .wrap()
   }
 }

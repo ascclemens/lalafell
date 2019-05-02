@@ -46,11 +46,11 @@ impl<'a> EventHandler for CommandListener<'a> {
     let run_result = command.run(&context, &message, params);
     match run_result {
       Ok(info) => match info.message {
-        Some(embed) => { message.channel_id.send_message(|c| c.embed(|e| embed(e).color(0x196358))).ok(); },
-        None => { message.react("\u{2705}").ok(); }
+        Some(embed) => { message.channel_id.send_message(&context, |c| c.embed(|e| embed(e).color(0x196358))).ok(); },
+        None => { message.react(&context, "\u{2705}").ok(); }
       },
       Err(CommandFailure::Internal(info)) => {
-        message.channel_id.send_message(|c| c.embed(|e| e.description("An internal error happened while processing this command."))).ok();
+        message.channel_id.send_message(&context, |c| c.embed(|e| e.description("An internal error happened while processing this command."))).ok();
         error!("error during command {} (message {})", command_name, message.id);
         error!("params: {:?}", params);
         for err in info.error.iter() {
@@ -58,8 +58,8 @@ impl<'a> EventHandler for CommandListener<'a> {
         }
       },
       Err(CommandFailure::External(info)) => match info.message {
-        Some(embed) => { message.channel_id.send_message(|c| c.embed(|e| embed(e).color(0x63191b))).ok(); },
-        None => { message.react("\u{274c}").ok(); }
+        Some(embed) => { message.channel_id.send_message(&context, |c| c.embed(|e| embed(e).color(0x63191b))).ok(); },
+        None => { message.react(&context, "\u{274c}").ok(); }
       }
     }
   }
