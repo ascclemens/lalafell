@@ -9,7 +9,7 @@ use std::collections::HashMap;
 
 pub struct CommandListener<'a> {
   prefix: String,
-  commands: HashMap<Vec<String>, Box<Command<'a> + Send + Sync>>
+  commands: HashMap<Vec<String>, Box<dyn Command<'a> + Send + Sync>>
 }
 
 impl<'a> CommandListener<'a> {
@@ -20,7 +20,7 @@ impl<'a> CommandListener<'a> {
     }
   }
 
-  pub fn add_command<T: AsRef<str>>(&mut self, names: &[T], command: Box<Command<'a> + Send + Sync>) {
+  pub fn add_command<T: AsRef<str>>(&mut self, names: &[T], command: Box<dyn Command<'a> + Send + Sync>) {
     self.commands.insert(names.iter().map(|t| t.as_ref().to_string()).collect(), command);
   }
 }

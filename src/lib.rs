@@ -1,4 +1,4 @@
-#![feature(box_syntax, fnbox)]
+#![feature(box_syntax)]
 
 #[macro_use]
 extern crate error_chain;
