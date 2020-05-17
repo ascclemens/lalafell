@@ -6,7 +6,7 @@ authors = ["Kyle Clemens <me@kyleclemens.com>"]
 [dependencies]
 error-chain = "0.12"
 log = "0.4"
-structopt = { version = "0.2", default-features = false }
+structopt = { version = "0.3", default-features = false }
 quoted_strings = "0.1"
 
 [dependencies.serenity]
