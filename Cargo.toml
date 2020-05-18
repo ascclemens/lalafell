@@ -1,7 +1,7 @@
 [package]
 name = "lalafell"
 version = "0.1.0"
-authors = ["Kyle Clemens <me@kyleclemens.com>"]
+authors = ["Anna Clemens <me@kyleclemens.com>"]
 
 [dependencies]
 error-chain = "0.12"
